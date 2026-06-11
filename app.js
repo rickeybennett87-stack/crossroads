@@ -23,9 +23,9 @@
 //     Docs: https://support.google.com/adsense/answer/9806868
 //   • Stripe cash purchase: earnOrBuyModal() shows "coming soon" — add Stripe link
 //     when payment account is ready
-//   • Fill real IDs in index.html:
-//       G-XXXXXXXXXX  → your GA4 measurement ID (Google Analytics dashboard)
+//   • Fill real AdSense publisher ID in index.html:
 //       ca-pub-XXXXXXXXXX → your AdSense publisher ID (AdSense dashboard)
+//     GA4 ID G-WC611BCKGW is already live in all pages.
 //   • Test: run  python3 server.py 8765  then open http://localhost:8765
 //     Submit a chart, verify wheel renders, reading renders, credits bar shows,
 //     click ⛎ 3x, verify oracle overlay, click "Enter the Oracle",
