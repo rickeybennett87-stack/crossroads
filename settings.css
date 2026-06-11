@@ -1,0 +1,311 @@
+/* Crossroads — Settings UI */
+
+.settings-body {
+  background: var(--burgundy);
+  min-height: 100svh;
+}
+
+/* ── NAV ── */
+.s-nav {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  background: var(--burgundy-mid);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 0.5rem;
+}
+
+.s-nav-back {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  height: 56px;
+  color: var(--emerald-light);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.s-nav-back:hover { color: var(--emerald-glow); }
+
+.s-nav-title {
+  flex: 1;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.s-nav-spacer {
+  min-width: 80px; /* mirrors back button width */
+}
+
+/* ── MAIN ── */
+.s-main {
+  padding-bottom: 3rem;
+}
+
+/* ── GROUPS ── */
+.s-group {
+  margin-top: 2rem;
+}
+
+.s-group-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--emerald-light);
+  padding: 0 1.25rem 0.5rem;
+}
+
+.s-list {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── ROWS ── */
+.s-row {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0.85rem 1.25rem;
+  background: var(--burgundy-card);
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+  gap: 1rem;
+  transition: background 0.15s;
+}
+
+.s-row:last-child { border-bottom: none; }
+.s-row:not(.s-row-toggle):hover { background: #2a0f1a; }
+
+.s-row-toggle { cursor: default; }
+
+.s-row-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  width: 1.4rem;
+  text-align: center;
+  color: var(--emerald-light);
+}
+
+.s-row-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.s-row-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.s-row-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--ash);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.s-row-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--emerald-light);
+  flex-shrink: 0;
+}
+
+.s-chevron {
+  color: var(--ash);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── TOGGLE ── */
+.s-toggle {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.s-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.s-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--rule);
+  border-radius: 13px;
+  transition: background 0.2s;
+}
+
+.s-toggle input:checked ~ .s-toggle-track { background: var(--emerald); }
+
+.s-toggle-thumb {
+  position: absolute;
+  width: 20px; height: 20px;
+  top: 3px; left: 3px;
+  background: var(--parchment);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+
+.s-toggle input:checked ~ .s-toggle-thumb { transform: translateX(18px); }
+
+/* ── SUBPAGE BODY ── */
+.s-sub-body {
+  padding: 1.75rem 1.25rem 3rem;
+}
+
+.s-field {
+  margin-bottom: 1.75rem;
+}
+
+.s-field-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--emerald-light);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.s-field-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--ash);
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 0.65rem;
+}
+
+.s-input {
+  background: linear-gradient(135deg, rgba(8,3,6,0.95) 0%, rgba(30,12,20,0.9) 100%);
+  border: 1px solid rgba(90,16,32,0.5);
+  color: var(--parchment);
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  min-height: 48px;
+  width: 100%;
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+  transition: border-color 0.2s;
+  display: block;
+}
+
+.s-input:focus { border-color: rgba(45,138,80,0.7); }
+.s-input::placeholder { color: var(--ash); opacity: 0.5; }
+
+.s-input[type="date"]::-webkit-calendar-picker-indicator,
+.s-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) hue-rotate(100deg);
+  cursor: pointer;
+}
+
+/* ── RADIO GROUP ── */
+.s-radio-group {
+  border: 1px solid var(--rule);
+}
+
+.s-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--burgundy-card);
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background 0.15s;
+  min-height: 52px;
+}
+
+.s-radio-option:last-child { border-bottom: none; }
+.s-radio-option:hover { background: #2a0f1a; }
+.s-radio-option input[type="radio"] { display: none; }
+
+.s-radio-dot {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--ash);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.s-radio-option input:checked + .s-radio-dot { border-color: var(--emerald-light); }
+.s-radio-option input:checked + .s-radio-dot::after {
+  content: '';
+  width: 9px; height: 9px;
+  background: var(--emerald-light);
+  border-radius: 50%;
+}
+
+.s-radio-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--text);
+  display: block;
+}
+
+.s-radio-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  color: var(--ash);
+  display: block;
+  margin-top: 0.1rem;
+}
+
+/* ── DIVIDER ── */
+.s-divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 1.75rem 0;
+  opacity: 0.4;
+}
+
+/* ── SAVE BUTTON ── */
+.s-save-btn {
+  background: var(--gem-emerald);
+  color: var(--parchment);
+  border: 1px solid rgba(80,200,120,0.25);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 1rem;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 16px rgba(29,102,54,0.3), inset 0 1px 0 rgba(110,220,145,0.2);
+  transition: filter 0.2s;
+}
+
+.s-save-btn:hover { filter: brightness(1.15); }

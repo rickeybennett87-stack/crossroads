@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a0f">
+<title>Chart Display — Crossroads Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="settings.css">
+</head>
+<body class="settings-body">
+
+<nav class="s-nav">
+  <a href="settings.html" class="s-nav-back">‹ Settings</a>
+  <span class="s-nav-title">Chart Display</span>
+  <span class="s-nav-spacer"></span>
+</nav>
+
+<main class="s-sub-body">
+
+  <div class="s-field">
+    <span class="s-field-label">Planets Shown</span>
+    <span class="s-field-desc">Sun is always shown. All others can be toggled.</span>
+    <div class="s-list" style="border:1px solid var(--rule);">
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">☉</span>
+        <span class="s-row-body"><span class="s-row-label">Sun</span></span>
+        <label class="s-toggle"><input type="checkbox" checked disabled><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">☽</span>
+        <span class="s-row-body"><span class="s-row-label">Moon</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-moon" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">☿</span>
+        <span class="s-row-body"><span class="s-row-label">Mercury</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-mercury" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">♀</span>
+        <span class="s-row-body"><span class="s-row-label">Venus</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-venus" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">♂</span>
+        <span class="s-row-body"><span class="s-row-label">Mars</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-mars" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-icon">♃</span>
+        <span class="s-row-body"><span class="s-row-label">Jupiter</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-jupiter" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+      <div class="s-row s-row-toggle">
+        <span class="s-row-icon">♄</span>
+        <span class="s-row-body"><span class="s-row-label">Saturn</span></span>
+        <label class="s-toggle"><input type="checkbox" id="p-saturn" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="s-divider"></div>
+
+  <div class="s-field">
+    <span class="s-field-label">Degree Format</span>
+    <div class="s-radio-group">
+      <label class="s-radio-option">
+        <input type="radio" name="deg-format" value="dms">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Degrees° Minutes'</span>
+          <span class="s-radio-sub">Traditional format — e.g. 14° 32'</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="deg-format" value="decimal">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Decimal</span>
+          <span class="s-radio-sub">Numeric format — e.g. 14.53°</span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <button class="s-save-btn" onclick="save()">Save Display</button>
+
+</main>
+
+<script>
+(function() {
+  const d = JSON.parse(localStorage.getItem('crossroads_display') || 'null');
+  const planets = ['moon','mercury','venus','mars','jupiter','saturn'];
+  planets.forEach(p => {
+    const el = document.getElementById('p-' + p);
+    if (el && d?.planets) el.checked = d.planets[p] !== false;
+  });
+  const df = d?.degFormat || 'dms';
+  const r = document.querySelector(`input[name="deg-format"][value="${df}"]`);
+  if (r) r.checked = true;
+})();
+
+function save() {
+  const planets = {};
+  ['moon','mercury','venus','mars','jupiter','saturn'].forEach(p => {
+    planets[p] = document.getElementById('p-' + p)?.checked !== false;
+  });
+  const degFormat = document.querySelector('input[name="deg-format"]:checked')?.value || 'dms';
+  localStorage.setItem('crossroads_display', JSON.stringify({ planets, degFormat }));
+  window.location.href = 'settings.html';
+}
+</script>
+</body>
+</html>

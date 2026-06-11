@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a0f">
+<title>Notifications — Crossroads Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="settings.css">
+</head>
+<body class="settings-body">
+
+<nav class="s-nav">
+  <a href="settings.html" class="s-nav-back">‹ Settings</a>
+  <span class="s-nav-title">Notifications</span>
+  <span class="s-nav-spacer"></span>
+</nav>
+
+<main class="s-sub-body">
+
+  <div class="s-field">
+    <span class="s-field-label">Transit Alerts</span>
+    <span class="s-field-desc">Alerts when planets move into new positions relative to the true sky or your natal chart.</span>
+    <div class="s-list" style="border:1px solid var(--rule);">
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-body">
+          <span class="s-row-label">Planetary Ingresses</span>
+          <span class="s-row-desc">When any planet enters a new constellation</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-ingress"><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-body">
+          <span class="s-row-label">Personal Transits</span>
+          <span class="s-row-desc">Planets crossing your natal positions</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-personal"><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+      <div class="s-row s-row-toggle">
+        <span class="s-row-body">
+          <span class="s-row-label">Retrograde Stations</span>
+          <span class="s-row-desc">When planets turn retrograde or direct</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-retro"><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-divider"></div>
+
+  <div class="s-field">
+    <span class="s-field-label">Lunations</span>
+    <span class="s-field-desc">Moon phase alerts.</span>
+    <div class="s-list" style="border:1px solid var(--rule);">
+      <div class="s-row s-row-toggle" style="border-bottom:1px solid var(--rule);">
+        <span class="s-row-body">
+          <span class="s-row-label">New Moon</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-new-moon" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+      <div class="s-row s-row-toggle">
+        <span class="s-row-body">
+          <span class="s-row-label">Full Moon</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-full-moon" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-divider"></div>
+
+  <div class="s-field">
+    <span class="s-field-label">Ophiuchus Season</span>
+    <span class="s-field-desc">Alert when the Sun enters Ophiuchus — November 29 through December 17. The sign they buried.</span>
+    <div class="s-list" style="border:1px solid var(--rule);">
+      <div class="s-row s-row-toggle">
+        <span class="s-row-icon" style="color:var(--emerald-light);">⛎</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Ophiuchus Season</span>
+        </span>
+        <label class="s-toggle"><input type="checkbox" id="n-ophiuchus" checked><span class="s-toggle-track"></span><span class="s-toggle-thumb"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <button class="s-save-btn" onclick="save()">Save Notifications</button>
+
+</main>
+
+<script>
+(function() {
+  const n = JSON.parse(localStorage.getItem('crossroads_notifications') || 'null');
+  if (!n) return;
+  ['ingress','personal','retro','new-moon','full-moon','ophiuchus'].forEach(k => {
+    const el = document.getElementById('n-' + k);
+    if (el && n[k] !== undefined) el.checked = n[k];
+  });
+})();
+
+function save() {
+  const keys = ['ingress','personal','retro','new-moon','full-moon','ophiuchus'];
+  const data = {};
+  keys.forEach(k => { data[k] = document.getElementById('n-' + k)?.checked || false; });
+  localStorage.setItem('crossroads_notifications', JSON.stringify(data));
+  window.location.href = 'settings.html';
+}
+</script>
+</body>
+</html>

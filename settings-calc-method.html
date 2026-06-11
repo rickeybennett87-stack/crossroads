@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a0f">
+<title>Calculation Method — Crossroads Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="settings.css">
+</head>
+<body class="settings-body">
+
+<nav class="s-nav">
+  <a href="settings.html" class="s-nav-back">‹ Settings</a>
+  <span class="s-nav-title">Calculation Method</span>
+  <span class="s-nav-spacer"></span>
+</nav>
+
+<main class="s-sub-body">
+
+  <div class="s-field">
+    <span class="s-field-label">Ayanamsa</span>
+    <span class="s-field-desc">The correction applied to convert tropical zodiac positions to true sidereal coordinates. Lahiri is the standard for modern sidereal systems and aligns most closely with IAU stellar positions.</span>
+    <div class="s-radio-group">
+      <label class="s-radio-option">
+        <input type="radio" name="ayanamsa" value="lahiri">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Lahiri</span>
+          <span class="s-radio-sub">Indian national standard · ~24.02° at J2000 · recommended</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="ayanamsa" value="fagan">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Fagan-Bradley</span>
+          <span class="s-radio-sub">Western sidereal standard · Cyril Fagan · ~24.74° at J2000</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="ayanamsa" value="raman">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Raman</span>
+          <span class="s-radio-sub">B.V. Raman system · ~22.36° at J2000</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="ayanamsa" value="true-chitrapaksha">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">True Chitrapaksha</span>
+          <span class="s-radio-sub">Anchored to star Spica (Chitra) at 0° Libra · zero-point method</span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="s-divider"></div>
+
+  <div class="s-field">
+    <span class="s-field-label">House System</span>
+    <span class="s-field-desc">Method for dividing the sky into twelve houses. Does not affect sign positions — only the house cusps. Whole Sign is the oldest system and the most consistent with sidereal calculation.</span>
+    <div class="s-radio-group">
+      <label class="s-radio-option">
+        <input type="radio" name="houses" value="whole-sign">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Whole Sign</span>
+          <span class="s-radio-sub">Each house occupies one full sign · oldest system · simplest</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="houses" value="placidus">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Placidus</span>
+          <span class="s-radio-sub">Most common in Western astrology · time-based division</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="houses" value="koch">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Koch</span>
+          <span class="s-radio-sub">Birthplace system · highly sensitive to birth latitude</span>
+        </span>
+      </label>
+      <label class="s-radio-option">
+        <input type="radio" name="houses" value="equal">
+        <span class="s-radio-dot"></span>
+        <span>
+          <span class="s-radio-title">Equal</span>
+          <span class="s-radio-sub">30° per house measured from Ascendant · clean and regular</span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <button class="s-save-btn" onclick="save()">Save Method</button>
+
+</main>
+
+<script>
+(function() {
+  const calc = JSON.parse(localStorage.getItem('crossroads_calc') || 'null');
+  const ayanamsa = calc?.ayanamsa || 'lahiri';
+  const houses   = calc?.houses   || 'whole-sign';
+  const ra = document.querySelector(`input[name="ayanamsa"][value="${ayanamsa}"]`);
+  const rh = document.querySelector(`input[name="houses"][value="${houses}"]`);
+  if (ra) ra.checked = true;
+  if (rh) rh.checked = true;
+})();
+
+function save() {
+  const ayanamsa = document.querySelector('input[name="ayanamsa"]:checked')?.value || 'lahiri';
+  const houses   = document.querySelector('input[name="houses"]:checked')?.value   || 'whole-sign';
+  localStorage.setItem('crossroads_calc', JSON.stringify({ ayanamsa, houses }));
+  window.location.href = 'settings.html';
+}
+</script>
+</body>
+</html>

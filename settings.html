@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a0f">
+<title>Settings — Crossroads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="settings.css">
+</head>
+<body class="settings-body">
+
+<nav class="s-nav">
+  <a href="index.html" class="s-nav-back">‹ Crossroads</a>
+  <span class="s-nav-title">Settings</span>
+  <span class="s-nav-spacer"></span>
+</nav>
+
+<main class="s-main">
+
+  <div class="s-group">
+    <div class="s-group-label">Your Profile</div>
+    <div class="s-list">
+      <a href="settings-birth-data.html" class="s-row">
+        <span class="s-row-icon">☽</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Birth Data</span>
+          <span class="s-row-desc">Date, time, and place of birth</span>
+        </span>
+        <span class="s-row-value" id="val-birth"></span>
+        <span class="s-chevron">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="s-group">
+    <div class="s-group-label">Calculation</div>
+    <div class="s-list">
+      <a href="settings-calc-method.html" class="s-row">
+        <span class="s-row-icon">⛎</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Calculation Method</span>
+          <span class="s-row-desc">Ayanamsa, house system, coordinate basis</span>
+        </span>
+        <span class="s-row-value" id="val-calc"></span>
+        <span class="s-chevron">›</span>
+      </a>
+      <a href="settings-chart-display.html" class="s-row">
+        <span class="s-row-icon">✦</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Chart Display</span>
+          <span class="s-row-desc">Planets shown, aspects, degree format</span>
+        </span>
+        <span class="s-chevron">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="s-group">
+    <div class="s-group-label">Alerts</div>
+    <div class="s-list">
+      <a href="settings-notifications.html" class="s-row">
+        <span class="s-row-icon">◈</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Notifications</span>
+          <span class="s-row-desc">Transits, lunations, ingresses</span>
+        </span>
+        <span class="s-chevron">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="s-group">
+    <div class="s-group-label">Display</div>
+    <div class="s-list">
+      <div class="s-row s-row-toggle">
+        <span class="s-row-icon">◷</span>
+        <span class="s-row-body">
+          <span class="s-row-label">24-Hour Time</span>
+        </span>
+        <label class="s-toggle">
+          <input type="checkbox" id="toggle-24hr">
+          <span class="s-toggle-track"></span>
+          <span class="s-toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="s-row s-row-toggle">
+        <span class="s-row-icon">°</span>
+        <span class="s-row-body">
+          <span class="s-row-label">Decimal Degrees</span>
+          <span class="s-row-desc">Off shows 14° 32' format</span>
+        </span>
+        <label class="s-toggle">
+          <input type="checkbox" id="toggle-decimal">
+          <span class="s-toggle-track"></span>
+          <span class="s-toggle-thumb"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+(function() {
+  const birth = JSON.parse(localStorage.getItem('crossroads_birth') || 'null');
+  if (birth?.date) {
+    const d = new Date(birth.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    document.getElementById('val-birth').textContent = d;
+  }
+  const calc = JSON.parse(localStorage.getItem('crossroads_calc') || 'null');
+  const labels = { lahiri:'Lahiri', fagan:'Fagan-Bradley', raman:'Raman', 'true-chitrapaksha':'True Chitra' };
+  document.getElementById('val-calc').textContent = calc?.ayanamsa ? (labels[calc.ayanamsa] || calc.ayanamsa) : 'Lahiri';
+
+  const t24 = document.getElementById('toggle-24hr');
+  const tDec = document.getElementById('toggle-decimal');
+  t24.checked = JSON.parse(localStorage.getItem('crossroads_24hr') || 'false');
+  tDec.checked = JSON.parse(localStorage.getItem('crossroads_decimal') || 'false');
+  t24.addEventListener('change', () => localStorage.setItem('crossroads_24hr', t24.checked));
+  tDec.addEventListener('change', () => localStorage.setItem('crossroads_decimal', tDec.checked));
+})();
+</script>
+</body>
+</html>

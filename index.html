@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="True 13-sign astrology calculated against the actual sky. Your real sign, not the one they gave you.">
+<title>Crossroads — True Sky Astrology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX');
+</script>
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+  data-ad-client="ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ORACLE THRESHOLD OVERLAY
+     Hidden until ⛎ in hero is clicked 3 times. JS in app.js handles toggle.
+     NEXT: Nothing — this section is complete.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="oracleOverlay" class="oracle-overlay hidden">
+  <div class="oracle-overlay-inner">
+    <div class="oracle-overlay-symbol">⛎</div>
+    <blockquote class="oracle-tolkien">
+      "The Road goes ever on and on<br>
+      Down from the door where it began.<br>
+      Now far ahead the Road has gone,<br>
+      And I must follow, if I can."
+      <footer class="oracle-tolkien-attr">— J.R.R. Tolkien</footer>
+    </blockquote>
+    <div class="oracle-rule"></div>
+    <p class="oracle-msg">You found your way here.</p>
+    <p class="oracle-msg">What follows is the sky as it actually is — not as it flatters, not as it comforts, but as it stands.</p>
+    <p class="oracle-msg oracle-msg-em">Knowledge is power.<br>With great knowledge comes great power.<br>With great power comes responsibility.</p>
+    <p class="oracle-msg">Do not take from anyone else<br>the journey of finding this themselves.<br>Allow them that.</p>
+    <div class="oracle-rule"></div>
+    <button id="enterOracleBtn" class="oracle-enter-btn">Enter the Oracle</button>
+  </div>
+</div>
+
+<div class="app-shell">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">True Sky &nbsp;&#183;&nbsp; IAU Boundaries &nbsp;&#183;&nbsp; 13 Signs</div>
+      <h1>Cross<span class="hero-x">✕</span><em>Roads</em></h1>
+      <p class="hero-sub">Building the truth long denied to you for tyranny's convenience — one star at a time.</p>
+      <div class="serpent-rule"></div>
+      <!-- Oracle trigger: click 3x to open threshold overlay. Subtle — intentional. -->
+      <div class="oracle-trigger" id="oracleTrigger" aria-label="Ophiuchus symbol" title="⛎">⛎</div>
+    </div>
+  </header>
+
+  <!-- Ad: Leaderboard slot — AdSense fills in standard mode; swapAdsForOracle() replaces with TMI house ad in oracle mode -->
+  <div class="ad-slot ad-leaderboard" id="adLeaderboard"></div>
+
+  <!-- ENTRY FORM -->
+  <section class="section entry-section" id="chart">
+    <div class="section-inner">
+      <div class="section-label">Your Chart</div>
+      <h2 class="section-title">Enter Your <em>Birth Data</em></h2>
+      <p class="body-text">Date, time, and place. The sky at your moment. Calculated against actual IAU constellation boundaries — not the 30° calendar slices invented for Babylonian arithmetic.</p>
+
+      <form class="birth-form" id="birthForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Birth Date</label>
+            <input type="date" id="birthDate" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Birth Time <span class="form-hint">(as accurate as possible)</span></label>
+            <input type="time" id="birthTime" class="form-input" value="12:00">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Birth City</label>
+            <input type="text" id="birthCity" class="form-input" placeholder="Austin, TX" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">UTC Offset <span class="form-hint">(e.g. -6 for CST)</span></label>
+            <input type="number" id="utcOffset" class="form-input" value="-6" min="-12" max="14" step="0.5">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Latitude</label>
+            <input type="number" id="lat" class="form-input" placeholder="30.2672" step="0.0001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Longitude</label>
+            <input type="number" id="lon" class="form-input" placeholder="-97.7431" step="0.0001">
+          </div>
+        </div>
+        <p class="form-geo-note">
+          <button type="button" class="geo-btn" id="geoBtn">&#9670; Use my current location for birth</button>
+        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Current Latitude <span class="form-hint">(where you are now)</span></label>
+            <input type="number" id="currentLat" class="form-input" placeholder="same as birth" step="0.0001">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Longitude</label>
+            <input type="number" id="currentLon" class="form-input" placeholder="same as birth" step="0.0001">
+          </div>
+        </div>
+        <p class="form-geo-note">
+          <button type="button" class="geo-btn" id="currentGeoBtn">&#9670; Use my current location now</button>
+        </p>
+        <button type="submit" class="submit-btn">Calculate My True Chart</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="section results-section hidden" id="results">
+    <div class="section-inner">
+      <div class="section-label">Your Reading</div>
+      <div class="ecliptic-wrap">
+        <div class="ecliptic-strip-label">Ecliptic — proportional to actual solar transit per constellation</div>
+        <div id="eclipticStrip"></div>
+      </div>
+      <div id="jplBadge" class="jpl-badge jpl-hidden"></div>
+
+      <!-- Celestial wheel SVG — populated by buildWheelSVG() in app.js after chart renders -->
+      <div class="wheel-wrap" id="wheelWrap"></div>
+
+      <div id="chartOutput"></div>
+
+      <!-- Interpretation reading — populated by renderReading() in app.js after chart renders -->
+      <div id="readingOutput" class="reading-output"></div>
+
+      <!-- Credits bar — always visible once results load -->
+      <div class="credits-bar">
+        <span class="credits-display" id="creditsDisplay">Credits: 0</span>
+        <button class="earn-credits-btn" id="earnCreditsBtn">◇ Watch an ad to earn credits</button>
+      </div>
+
+      <!-- Premium report buttons — hidden until chart is calculated (app.js removes hidden class) -->
+      <!-- NEXT: If premiumBtns are not showing, check that app.js calls
+           document.getElementById('premiumBtns')?.classList.remove('hidden')
+           after chart render (see Edit 4 in app.js). -->
+      <div class="premium-btns hidden" id="premiumBtns">
+        <button class="premium-btn" id="synastryBtn">⟁ Love Compatibility — 10 credits</button>
+        <button class="premium-btn" id="quarterlyBtn">◎ Quarterly Prediction — 20 credits</button>
+      </div>
+
+      <!-- Synastry output section — shown by synastryBtn click handler in app.js -->
+      <div id="synastrySection" class="premium-section hidden"></div>
+
+      <!-- Quarterly prediction output — shown by quarterlyBtn click handler in app.js -->
+      <div id="quarterlySection" class="premium-section hidden"></div>
+    </div>
+  </section>
+
+  <!-- THE THIRTEEN -->
+  <section class="section signs-section">
+    <div class="section-inner">
+      <div class="section-label">The Thirteen</div>
+      <h2 class="section-title">Signs the Sky <em>Actually Has</em></h2>
+      <p class="body-text">The ecliptic — the path the sun walks through the year — crosses thirteen constellations. The twelfth was removed in 600 BCE so the months would divide evenly. It was never lost from the sky. Only from the calendar.</p>
+      <div class="signs-grid" id="signsGrid"></div>
+    </div>
+  </section>
+
+  <!-- OPHIUCHUS FEATURE -->
+  <section class="section ophiuchus-section">
+    <div class="section-inner ophiuchus-inner">
+      <div class="ophiuchus-symbol">&#x26CE;</div>
+      <div class="ophiuchus-text">
+        <div class="section-label">The Missing Sign</div>
+        <h2 class="section-title"><em>Ophiuchus</em></h2>
+        <p class="body-text">The Serpent Bearer. Asclepius, god of medicine, who mastered the art of resurrection so completely that Hades complained to Zeus — the dead were no longer arriving. Zeus cast him into the stars for the affront of succeeding too well.</p>
+        <p class="body-text" style="margin-top:1rem;">He walks between November 29 and December 17. He is the healer at the crossroads, the traveler of many roads, the one who refuses the boundary between life and death. He was cut from the zodiac for calendar convenience. He was always in the sky.</p>
+        <p class="body-text" style="margin-top:1rem;font-style:italic;color:var(--emerald);">If your birthday falls in this window — you were never a Sagittarius. You were always this.</p>
+        <!-- PUZZLE LAYER 1: ends with a line that doesn't fit the flattering tone —
+             seeds the question "what else is maintained by preference?" -->
+        <p class="body-text" style="margin-top:1rem;font-size:.88rem;color:var(--ash);">He was cut from the zodiac for the inconvenience of his knowledge. Some boundaries are maintained not by physics, but by preference.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="section why-section">
+    <div class="section-inner">
+      <div class="section-label">The Mathematics</div>
+      <h2 class="section-title">Why Your Sign <em>Moved</em></h2>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">&#9670;</div>
+          <h3>Precession</h3>
+          <p>Earth's axis wobbles over a 26,000-year cycle. The tropical zodiac, fixed to the equinox in 600 BCE, has drifted roughly 24° from the actual stars. The sky you were born under is not the sky the calendar describes.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">&#9671;</div>
+          <h3>Unequal Signs</h3>
+          <p>The 12 standard signs each occupy exactly 30° — a calendar convenience. Real constellations span different arcs. Virgo covers 44° of the ecliptic. Scorpius covers 7°. The slices were never equal.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">&#10022;</div>
+          <h3>IAU Boundaries</h3>
+          <p>The International Astronomical Union defined official constellation boundaries in 1930. Those boundaries — not ancient mythology, not calendar math — determine which constellation the sun actually occupied on your birthday.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">&#9633;</div>
+          <h3>NASA Data</h3>
+          <p>Every calculation in Crossroads uses the JPL DE440 ephemeris — the same planetary position data used by NASA mission planning. Your chart is not an approximation. It is where the bodies actually were.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-symbol">&#x26CE;</div>
+    <div class="footer-name">Cross<span class="hero-x" style="font-size:0.7em;">✕</span><em>Roads</em></div>
+    <p class="footer-mono">True Sky Astrology &nbsp;&#183;&nbsp; IAU Boundaries &nbsp;&#183;&nbsp; JPL DE440</p>
+    <p class="footer-note">Calculations powered by Astronomy Engine (Don Cross / CosineKitty). Constellation boundaries from IAU 1930 Delporte catalog. Built by Rickey Jay Bennett II.</p>
+  </footer>
+
+</div>
+
+<script>var exports = {};</script>
+<script src="astronomy.js"></script>
+<script>var Astronomy = exports;</script>
+<!-- Credits modal — used by watchAd() and earnOrBuyModal() instead of alert/confirm -->
+<div id="creditsModal" class="credits-modal hidden">
+  <div class="credits-modal-inner">
+    <div class="credits-modal-title" id="creditsModalTitle"></div>
+    <div class="credits-modal-body" id="creditsModalBody"></div>
+    <div class="credits-modal-actions">
+      <button class="credits-modal-confirm" id="creditsModalConfirm"></button>
+      <button class="credits-modal-cancel" id="creditsModalCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+<script src="api-proxy.js"></script>
+<script src="boundaries.js"></script>
+<script src="chart.js"></script>
+<!-- wheel.js: buildWheelSVG(natalChart, currentChart, natalAspects) → SVG string -->
+<script src="wheel.js"></script>
+<!-- interpretations.js: buildFullReading(..., mode) → reading object; buildSynastryReading(...) -->
+<script src="interpretations.js"></script>
+<script src="app.js"></script>
+<!-- NEXT: If chart/wheel/reading are not rendering, check browser console for JS errors.
+     Most likely cause: interpretations.js data tables have a syntax error.
+     Run: python3 server.py 8765 and check the console on load. -->
+</body>
+</html>
