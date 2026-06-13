@@ -1383,6 +1383,105 @@ body[data-mode=oracle] .reading-output { border-top-color: rgba(200,153,42,0.3);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
+   AUTH WALL
+   ════════════════════════════════════════════════════════════════════════════ */
+#authWall {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--burgundy);
+  padding: 2rem;
+}
+.auth-inner {
+  width: 100%;
+  max-width: 400px;
+  background: var(--burgundy-card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.auth-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--parchment);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.auth-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--ash);
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+.auth-input {
+  width: 100%;
+  background: var(--burgundy-mid);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+.auth-input:focus { outline: none; border-color: var(--emerald-light); }
+.auth-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.auth-btn-google {
+  background: #fff;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-actions { display: flex; gap: 0.75rem; }
+.auth-btn-primary  { background: var(--emerald); color: #fff; flex: 1; }
+.auth-btn-secondary { background: transparent; color: var(--ash); border: 1px solid var(--rule); flex: 1; }
+.auth-divider {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ash);
+  position: relative;
+}
+.auth-error {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: #e05050;
+  text-align: center;
+}
+#appShell.hidden, #authWall.hidden { display: none; }
+
+/* sign-out button in header */
+.sign-out-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ash);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.sign-out-btn:hover { color: var(--text); }
+
+/* ════════════════════════════════════════════════════════════════════════════
    MOBILE POLISH — 480px breakpoint additions
    NEXT: Test on real 375px device. Add more overrides if needed.
    ════════════════════════════════════════════════════════════════════════════ */

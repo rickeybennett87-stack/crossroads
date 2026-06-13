@@ -30,6 +30,33 @@
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
+     AUTH WALL — shown until user is signed in
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="authWall">
+  <div class="auth-inner">
+    <div class="auth-logo">Cross<span class="hero-x">✕</span><em>Roads</em></div>
+    <p class="auth-sub">True sky astrology. Sign in to access your chart.</p>
+    <button id="googleSignInBtn" class="auth-btn auth-btn-google">
+      <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Sign in with Google
+    </button>
+    <div class="auth-divider">or</div>
+    <input id="authEmail" type="email" placeholder="Email address" class="auth-input">
+    <input id="authPassword" type="password" placeholder="Password" class="auth-input">
+    <div class="auth-actions">
+      <button id="emailSignInBtn" class="auth-btn auth-btn-primary">Sign In</button>
+      <button id="emailSignUpBtn" class="auth-btn auth-btn-secondary">Create Account</button>
+    </div>
+    <p id="authError" class="auth-error hidden"></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     APP SHELL — hidden until signed in
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="appShell" class="hidden">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
      ORACLE THRESHOLD OVERLAY
      Hidden until ⛎ in hero is clicked 3 times. JS in app.js handles toggle.
      NEXT: Nothing — this section is complete.
@@ -65,6 +92,7 @@
       <div class="serpent-rule"></div>
       <!-- Oracle trigger: click 3x to open threshold overlay. Subtle — intentional. -->
       <div class="oracle-trigger" id="oracleTrigger" aria-label="Ophiuchus symbol" title="⛎">⛎</div>
+      <button id="signOutBtn" class="sign-out-btn">sign out</button>
     </div>
   </header>
 
@@ -252,11 +280,27 @@
   </div>
 </div>
 
+</div><!-- /appShell -->
+
 <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 
 <footer style="text-align:center;padding:2rem 1rem 3rem;font-family:'DM Mono',monospace;font-size:0.72rem;color:#3a2a1a;letter-spacing:0.06em;">
   <a href="staff.html" style="color:#3a2a1a;text-decoration:none;">the wrong staff</a>
 </footer>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCy22hiDDVSLkiIXzZ2YAMfr6TCHSmMHg8",
+    authDomain: "cross-x-roads.firebaseapp.com",
+    projectId: "cross-x-roads",
+    storageBucket: "cross-x-roads.firebasestorage.app",
+    messagingSenderId: "652043194486",
+    appId: "1:652043194486:web:63cc5e8d777a3ca2768f57"
+  };
+  const app = initializeApp(firebaseConfig);
+  window.__firebaseApp = app;
+</script>
+<script type="module" src="firebase-auth.js"></script>
 <script src="api-proxy.js"></script>
 <script src="boundaries.js"></script>
 <script src="chart.js"></script>
