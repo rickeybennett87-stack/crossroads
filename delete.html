@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a0a0f">
+<title>Delete My Data — Crossroads</title>
+<link rel="canonical" href="https://crossxroads.cc/delete.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .delete-page { max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem; color: var(--text, #e8ddd0); }
+  .delete-page h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: #c9b99a; margin-bottom: 0.3em; }
+  .delete-page p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.8; font-weight: 300; margin-bottom: 1.2em; }
+  .meta { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #5a4a34; letter-spacing: 0.05em; margin-bottom: 2.5rem; }
+  .back-link { display: inline-block; margin-bottom: 2rem; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; text-decoration: none; letter-spacing: 0.06em; }
+  .back-link:hover { color: #c9b99a; }
+  .delete-form { margin-top: 2rem; }
+  .delete-form label { display: block; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .delete-form input[type="email"] {
+    width: 100%; box-sizing: border-box;
+    background: #1a0a0f; border: 1px solid #3a2a1a;
+    color: #e8ddd0; font-family: 'DM Mono', monospace; font-size: 0.9rem;
+    padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.2rem;
+    outline: none;
+  }
+  .delete-form input[type="email"]:focus { border-color: #7a6a54; }
+  .delete-form textarea {
+    width: 100%; box-sizing: border-box;
+    background: #1a0a0f; border: 1px solid #3a2a1a;
+    color: #e8ddd0; font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.5rem;
+    resize: vertical; min-height: 100px; outline: none;
+  }
+  .delete-form textarea:focus { border-color: #7a6a54; }
+  .delete-btn {
+    font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.08em;
+    background: transparent; border: 1px solid #8a3a2a; color: #c07060;
+    padding: 0.75rem 2rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .delete-btn:hover { background: #8a3a2a22; border-color: #c07060; }
+  .delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #deleteStatus { margin-top: 1.5rem; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.7; }
+  .status-ok  { color: #80c090; }
+  .status-err { color: #c07060; }
+  .what-deleted { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #2a1a0a; }
+  .what-deleted h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; font-style: italic; color: #a09070; margin-bottom: 0.8em; }
+  .what-deleted ul { padding-left: 1.5em; }
+  .what-deleted li { font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.8; font-weight: 300; color: #a09070; }
+</style>
+</head>
+<body>
+<div class="delete-page">
+  <a href="/" class="back-link">← back to crossroads</a>
+  <h1>Delete My Data</h1>
+  <p class="meta">Crossroads True Sky Astrology &nbsp;·&nbsp; crossxroads.cc</p>
+
+  <p>Submit your request below and we will delete your account and all associated data within 30 days. You will receive no further confirmation — deletion is permanent and cannot be undone.</p>
+
+  <div class="delete-form">
+    <label for="deleteEmail">Email address on your account</label>
+    <input type="email" id="deleteEmail" placeholder="you@example.com" autocomplete="email">
+
+    <label for="deleteNote">Anything you'd like us to know (optional)</label>
+    <textarea id="deleteNote" placeholder="e.g. I signed in with Google using a different address"></textarea>
+
+    <button class="delete-btn" id="deleteBtn">Submit deletion request</button>
+    <div id="deleteStatus"></div>
+  </div>
+
+  <div class="what-deleted">
+    <h2>What gets deleted</h2>
+    <ul>
+      <li>Your account and login credentials</li>
+      <li>Your birth data and all saved charts</li>
+      <li>Your credit balance</li>
+      <li>All Firestore records associated with your account</li>
+    </ul>
+    <p style="margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:#5a4a34;">
+      Analytics data collected by Google Analytics and advertising data held by Google AdSense are governed by Google's own data retention policies.
+    </p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCy22hiDDVSLkiIXzZ2YAMfr6TCHSmMHg8",
+    authDomain: "cross-x-roads.firebaseapp.com",
+    projectId: "cross-x-roads",
+    storageBucket: "cross-x-roads.firebasestorage.app",
+    messagingSenderId: "652043194486",
+    appId: "1:652043194486:web:63cc5e8d777a3ca2768f57"
+  };
+
+  const app = initializeApp(firebaseConfig, 'delete-page');
+  const db  = getFirestore(app);
+
+  document.getElementById('deleteBtn').addEventListener('click', async () => {
+    const email = document.getElementById('deleteEmail').value.trim();
+    const note  = document.getElementById('deleteNote').value.trim();
+    const status = document.getElementById('deleteStatus');
+    const btn    = document.getElementById('deleteBtn');
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.className = 'status-err';
+      status.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    btn.disabled = true;
+    status.className = '';
+    status.textContent = 'Submitting…';
+
+    try {
+      await addDoc(collection(db, 'deletionRequests'), {
+        email,
+        note: note || '',
+        requestedAt: new Date().toISOString(),
+        status: 'pending'
+      });
+      status.className = 'status-ok';
+      status.textContent = 'Request received. Your account and data will be deleted within 30 days.';
+      btn.textContent = 'Request submitted';
+    } catch (e) {
+      status.className = 'status-err';
+      status.textContent = 'Something went wrong. Please email rickeybennett87@gmail.com directly to request deletion.';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
