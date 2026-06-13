@@ -4,82 +4,158 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1a0a0f">
-<title>Delete My Data — Crossroads</title>
+<title>Data & Account Deletion — Crossroads</title>
 <link rel="canonical" href="https://crossxroads.cc/delete.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-  .delete-page { max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem; color: var(--text, #e8ddd0); }
-  .delete-page h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: #c9b99a; margin-bottom: 0.3em; }
-  .delete-page p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.8; font-weight: 300; margin-bottom: 1.2em; }
+  .del-page { max-width: 680px; margin: 0 auto; padding: 4rem 2rem 6rem; color: var(--text, #e8ddd0); }
+  .del-page h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: #c9b99a; margin-bottom: 0.3em; }
+  .del-page p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.8; font-weight: 300; margin-bottom: 1.2em; }
   .meta { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #5a4a34; letter-spacing: 0.05em; margin-bottom: 2.5rem; }
   .back-link { display: inline-block; margin-bottom: 2rem; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; text-decoration: none; letter-spacing: 0.06em; }
   .back-link:hover { color: #c9b99a; }
-  .delete-form { margin-top: 2rem; }
-  .delete-form label { display: block; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
-  .delete-form input[type="email"] {
+
+  /* Option cards */
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; }
+  @media (max-width: 520px) { .option-grid { grid-template-columns: 1fr; } }
+  .option-card {
+    border: 1px solid #2a1a0a; border-radius: 10px; padding: 1.5rem;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    background: transparent;
+  }
+  .option-card:hover { border-color: #5a4a34; background: #1a0a0f44; }
+  .option-card.selected { border-color: #7a6a54; background: #1a0a0f88; }
+  .option-card.selected-danger { border-color: #8a3a2a; background: #2a0a0a44; }
+  .option-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: #c9b99a; margin-bottom: 0.5rem; }
+  .option-title.danger { color: #c07060; }
+  .option-desc { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; line-height: 1.65; font-weight: 300; color: #7a6a54; }
+
+  /* Form fields */
+  .del-form { display: none; margin-top: 0.5rem; }
+  .del-form.visible { display: block; }
+  .del-form label { display: block; font-family: 'DM Mono', monospace; font-size: 0.76rem; color: #7a6a54; letter-spacing: 0.06em; margin-bottom: 0.5rem; margin-top: 1.2rem; }
+  .del-form input[type="email"],
+  .del-form input[type="text"],
+  .del-form textarea {
     width: 100%; box-sizing: border-box;
     background: #1a0a0f; border: 1px solid #3a2a1a;
-    color: #e8ddd0; font-family: 'DM Mono', monospace; font-size: 0.9rem;
-    padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.2rem;
-    outline: none;
+    color: #e8ddd0; font-family: 'DM Mono', monospace; font-size: 0.88rem;
+    padding: 0.75rem 1rem; border-radius: 6px; outline: none;
   }
-  .delete-form input[type="email"]:focus { border-color: #7a6a54; }
-  .delete-form textarea {
-    width: 100%; box-sizing: border-box;
-    background: #1a0a0f; border: 1px solid #3a2a1a;
-    color: #e8ddd0; font-family: 'Cormorant Garamond', serif; font-size: 1rem;
-    padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.5rem;
-    resize: vertical; min-height: 100px; outline: none;
-  }
-  .delete-form textarea:focus { border-color: #7a6a54; }
-  .delete-btn {
+  .del-form input:focus, .del-form textarea:focus { border-color: #7a6a54; }
+  .del-form textarea { resize: vertical; min-height: 90px; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+
+  /* Buttons */
+  .del-btn {
+    display: inline-block; margin-top: 1.5rem;
     font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.08em;
-    background: transparent; border: 1px solid #8a3a2a; color: #c07060;
+    background: transparent; border: 1px solid #5a4a34; color: #c9b99a;
     padding: 0.75rem 2rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;
   }
-  .delete-btn:hover { background: #8a3a2a22; border-color: #c07060; }
-  .delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  #deleteStatus { margin-top: 1.5rem; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.7; }
+  .del-btn:hover { background: #3a2a1a44; border-color: #c9b99a; }
+  .del-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .del-btn-danger { border-color: #8a3a2a; color: #c07060; }
+  .del-btn-danger:hover { background: #8a3a2a22; border-color: #c07060; }
+  .del-btn-confirm { border-color: #c03020; color: #e05040; font-weight: 500; }
+  .del-btn-confirm:hover { background: #c0302022; border-color: #e05040; }
+
+  /* Step 2 confirm box */
+  .confirm-box {
+    display: none; margin-top: 1.5rem;
+    border: 1px solid #8a3a2a; border-radius: 8px;
+    padding: 1.25rem 1.5rem; background: #1a0505;
+  }
+  .confirm-box.visible { display: block; }
+  .confirm-box p { font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.7; color: #c07060; margin-bottom: 1rem; }
+  .confirm-box strong { color: #e05040; }
+
+  /* Status */
+  #dataStatus, #acctStatus { margin-top: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.7; min-height: 1.5rem; }
   .status-ok  { color: #80c090; }
   .status-err { color: #c07060; }
-  .what-deleted { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #2a1a0a; }
-  .what-deleted h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; font-style: italic; color: #a09070; margin-bottom: 0.8em; }
-  .what-deleted ul { padding-left: 1.5em; }
-  .what-deleted li { font-family: 'Cormorant Garamond', serif; font-size: 1rem; line-height: 1.8; font-weight: 300; color: #a09070; }
+
+  /* What gets deleted */
+  .scope-table { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #2a1a0a; }
+  .scope-table h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; font-style: italic; color: #a09070; margin-bottom: 1rem; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #5a4a34; letter-spacing: 0.06em; text-align: left; padding: 0.4rem 0.75rem; border-bottom: 1px solid #2a1a0a; }
+  td { font-family: 'Cormorant Garamond', serif; font-size: 0.98rem; color: #a09070; padding: 0.5rem 0.75rem; border-bottom: 1px solid #1a0a0a; line-height: 1.5; }
+  td:first-child { color: #c9b99a; width: 55%; }
+  .check { color: #80c090; }
+  .cross { color: #c07060; }
 </style>
 </head>
 <body>
-<div class="delete-page">
+<div class="del-page">
   <a href="/" class="back-link">← back to crossroads</a>
-  <h1>Delete My Data</h1>
+  <h1>Data &amp; Account Deletion</h1>
   <p class="meta">Crossroads True Sky Astrology &nbsp;·&nbsp; crossxroads.cc</p>
 
-  <p>Submit your request below and we will delete your account and all associated data within 30 days. You will receive no further confirmation — deletion is permanent and cannot be undone.</p>
+  <p>Choose what you would like to remove. Data deletion removes your stored information while keeping your account active. Account deletion is permanent and removes everything.</p>
 
-  <div class="delete-form">
-    <label for="deleteEmail">Email address on your account</label>
-    <input type="email" id="deleteEmail" placeholder="you@example.com" autocomplete="email">
-
-    <label for="deleteNote">Anything you'd like us to know (optional)</label>
-    <textarea id="deleteNote" placeholder="e.g. I signed in with Google using a different address"></textarea>
-
-    <button class="delete-btn" id="deleteBtn">Submit deletion request</button>
-    <div id="deleteStatus"></div>
+  <div class="option-grid">
+    <div class="option-card" id="cardData" onclick="selectOption('data')">
+      <div class="option-title">Delete My Data</div>
+      <div class="option-desc">Remove your saved charts, birth data, and credit history. Your account remains active and you can continue using the app.</div>
+    </div>
+    <div class="option-card" id="cardAcct" onclick="selectOption('account')">
+      <div class="option-title danger">Delete My Account</div>
+      <div class="option-desc">Permanently remove your account and all associated data. This cannot be undone. You will need to create a new account to use the app again.</div>
+    </div>
   </div>
 
-  <div class="what-deleted">
-    <h2>What gets deleted</h2>
-    <ul>
-      <li>Your account and login credentials</li>
-      <li>Your birth data and all saved charts</li>
-      <li>Your credit balance</li>
-      <li>All Firestore records associated with your account</li>
-    </ul>
-    <p style="margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:#5a4a34;">
-      Analytics data collected by Google Analytics and advertising data held by Google AdSense are governed by Google's own data retention policies.
-    </p>
+  <!-- Data deletion form -->
+  <div class="del-form" id="dataForm">
+    <label for="dataEmail">Email address on your account</label>
+    <input type="email" id="dataEmail" placeholder="you@example.com" autocomplete="email">
+    <label for="dataNote">Anything you'd like us to know (optional)</label>
+    <textarea id="dataNote" placeholder="e.g. please keep my account but remove all chart history"></textarea>
+    <button class="del-btn" id="dataBtn" onclick="submitData()">Submit data deletion request</button>
+    <div id="dataStatus"></div>
+  </div>
+
+  <!-- Account deletion form -->
+  <div class="del-form" id="acctForm">
+    <label for="acctEmail">Email address on your account</label>
+    <input type="email" id="acctEmail" placeholder="you@example.com" autocomplete="email">
+    <label for="acctNote">Reason for leaving (optional)</label>
+    <textarea id="acctNote" placeholder="We'd genuinely like to know"></textarea>
+    <button class="del-btn del-btn-danger" id="acctBtn" onclick="showConfirm()">Request account deletion →</button>
+
+    <!-- Step 2 confirmation -->
+    <div class="confirm-box" id="confirmBox">
+      <p>This will permanently delete your account, all saved charts, your credit balance, and all personal data associated with <strong id="confirmEmail">your account</strong>. There is no recovery.</p>
+      <p>Type <strong>DELETE</strong> below to confirm.</p>
+      <label for="confirmWord">Confirmation</label>
+      <input type="text" id="confirmWord" placeholder="DELETE" autocomplete="off" oninput="checkConfirmWord()">
+      <br>
+      <button class="del-btn del-btn-confirm" id="confirmBtn" disabled onclick="submitAccount()">Permanently delete my account</button>
+    </div>
+    <div id="acctStatus"></div>
+  </div>
+
+  <!-- Scope table -->
+  <div class="scope-table">
+    <h2>What each option removes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Data deletion</th>
+          <th>Account deletion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Saved charts &amp; birth data</td><td class="check">✓ Removed</td><td class="check">✓ Removed</td></tr>
+        <tr><td>Credit balance</td><td class="check">✓ Removed</td><td class="check">✓ Removed</td></tr>
+        <tr><td>Login credentials</td><td class="cross">Kept</td><td class="check">✓ Removed</td></tr>
+        <tr><td>Account &amp; profile</td><td class="cross">Kept</td><td class="check">✓ Removed</td></tr>
+        <tr><td>Google Analytics data</td><td colspan="2" style="color:#5a4a34;font-size:0.9rem;">Governed by Google's own retention policy</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:1.5rem;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:#5a4a34;">All requests are processed within 30 days. Questions: <a href="mailto:rickeybennett87@gmail.com" style="color:#7a6a54;">rickeybennett87@gmail.com</a></p>
   </div>
 </div>
 
@@ -99,38 +175,93 @@
   const app = initializeApp(firebaseConfig, 'delete-page');
   const db  = getFirestore(app);
 
-  document.getElementById('deleteBtn').addEventListener('click', async () => {
-    const email = document.getElementById('deleteEmail').value.trim();
-    const note  = document.getElementById('deleteNote').value.trim();
-    const status = document.getElementById('deleteStatus');
-    const btn    = document.getElementById('deleteBtn');
+  window.selectOption = function(type) {
+    document.getElementById('cardData').classList.remove('selected', 'selected-danger');
+    document.getElementById('cardAcct').classList.remove('selected', 'selected-danger');
+    document.getElementById('dataForm').classList.remove('visible');
+    document.getElementById('acctForm').classList.remove('visible');
+    document.getElementById('confirmBox').classList.remove('visible');
+
+    if (type === 'data') {
+      document.getElementById('cardData').classList.add('selected');
+      document.getElementById('dataForm').classList.add('visible');
+    } else {
+      document.getElementById('cardAcct').classList.add('selected-danger');
+      document.getElementById('acctForm').classList.add('visible');
+    }
+  };
+
+  window.showConfirm = function() {
+    const email = document.getElementById('acctEmail').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const s = document.getElementById('acctStatus');
+      s.className = 'status-err';
+      s.textContent = 'Please enter a valid email address first.';
+      return;
+    }
+    document.getElementById('confirmEmail').textContent = email;
+    document.getElementById('confirmBox').classList.add('visible');
+    document.getElementById('confirmWord').focus();
+  };
+
+  window.checkConfirmWord = function() {
+    const val = document.getElementById('confirmWord').value.trim();
+    document.getElementById('confirmBtn').disabled = (val !== 'DELETE');
+  };
+
+  window.submitData = async function() {
+    const email  = document.getElementById('dataEmail').value.trim();
+    const note   = document.getElementById('dataNote').value.trim();
+    const status = document.getElementById('dataStatus');
+    const btn    = document.getElementById('dataBtn');
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       status.className = 'status-err';
       status.textContent = 'Please enter a valid email address.';
       return;
     }
+    btn.disabled = true;
+    status.className = '';
+    status.textContent = 'Submitting…';
+    try {
+      await addDoc(collection(db, 'deletionRequests'), {
+        type: 'data', email, note: note || '',
+        requestedAt: new Date().toISOString(), status: 'pending'
+      });
+      status.className = 'status-ok';
+      status.textContent = 'Request received. Your data will be removed within 30 days.';
+      btn.textContent = 'Request submitted';
+    } catch(e) {
+      status.className = 'status-err';
+      status.textContent = 'Something went wrong. Email rickeybennett87@gmail.com to request deletion.';
+      btn.disabled = false;
+    }
+  };
+
+  window.submitAccount = async function() {
+    const email  = document.getElementById('acctEmail').value.trim();
+    const note   = document.getElementById('acctNote').value.trim();
+    const status = document.getElementById('acctStatus');
+    const btn    = document.getElementById('confirmBtn');
 
     btn.disabled = true;
     status.className = '';
     status.textContent = 'Submitting…';
-
     try {
       await addDoc(collection(db, 'deletionRequests'), {
-        email,
-        note: note || '',
-        requestedAt: new Date().toISOString(),
-        status: 'pending'
+        type: 'account', email, note: note || '',
+        requestedAt: new Date().toISOString(), status: 'pending'
       });
       status.className = 'status-ok';
-      status.textContent = 'Request received. Your account and data will be deleted within 30 days.';
-      btn.textContent = 'Request submitted';
-    } catch (e) {
+      status.textContent = 'Account deletion request received. Your account and all data will be permanently removed within 30 days.';
+      document.getElementById('confirmBox').classList.remove('visible');
+      document.getElementById('acctBtn').textContent = 'Request submitted';
+    } catch(e) {
       status.className = 'status-err';
-      status.textContent = 'Something went wrong. Please email rickeybennett87@gmail.com directly to request deletion.';
+      status.textContent = 'Something went wrong. Email rickeybennett87@gmail.com to request deletion.';
       btn.disabled = false;
     }
-  });
+  };
 </script>
 </body>
 </html>
