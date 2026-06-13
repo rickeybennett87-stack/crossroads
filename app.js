@@ -51,8 +51,23 @@ function track(event, params) {
 
 // ── Credit system ─────────────────────────────────────────────────────────────
 // Storage keys: xroads_credits (int), xroads_ad_date (ISO date), xroads_ad_count (int)
-const AD_DAILY_LIMIT = 5, AD_CREDIT_REWARD = 2;
-const CREDIT_COSTS = { synastry: 10, quarterly: 20 };
+const AD_DAILY_LIMIT = 1, AD_CREDIT_REWARD = 5;
+const CREDIT_COSTS = { suddenForecast: 30, synastry: 10, quarterly: 20 };
+
+// Credit purchase tiers — wired to Google Play Billing product IDs at launch
+// Product ID convention: credits_5, credits_11, credits_24 … credits_650
+const CREDIT_TIERS = [
+  { credits:   5, price: '$1.99',  productId: 'credits_5'   },
+  { credits:  11, price: '$3.99',  productId: 'credits_11'  },
+  { credits:  24, price: '$5.99',  productId: 'credits_24'  },
+  { credits:  45, price: '$9.99',  productId: 'credits_45'  },
+  { credits:  75, price: '$14.99', productId: 'credits_75'  },
+  { credits: 110, price: '$19.99', productId: 'credits_110' },
+  { credits: 175, price: '$29.99', productId: 'credits_175' },
+  { credits: 300, price: '$49.99', productId: 'credits_300' },
+  { credits: 460, price: '$74.99', productId: 'credits_460' },
+  { credits: 650, price: '$99.99', productId: 'credits_650' },
+];
 
 function getCredits() { return parseInt(localStorage.getItem('xroads_credits') || '0', 10); }
 
@@ -97,8 +112,8 @@ function watchAd() {
   const lastDate = localStorage.getItem('xroads_ad_date') || '';
   let count = lastDate === today ? parseInt(localStorage.getItem('xroads_ad_count') || '0', 10) : 0;
   if (count >= AD_DAILY_LIMIT) {
-    showModal('Daily Limit Reached',
-      'You\'ve watched ' + AD_DAILY_LIMIT + ' ads today.<br>Come back tomorrow for more credits.',
+    showModal('Come Back Tomorrow',
+      'You\'ve already earned your ' + AD_CREDIT_REWARD + ' free credits today.<br>One ad per day — come back tomorrow.',
       'OK');
     return;
   }
@@ -119,15 +134,24 @@ function earnOrBuyModal() {
   const today = new Date().toISOString().slice(0, 10);
   const lastDate = localStorage.getItem('xroads_ad_date') || '';
   const count = lastDate === today ? parseInt(localStorage.getItem('xroads_ad_count') || '0', 10) : 0;
-  const remaining = AD_DAILY_LIMIT - count;
+  const canWatch = count < AD_DAILY_LIMIT;
   showModal(
     'Get Credits',
-    '<div style="margin-bottom:.75rem">Current balance: <strong style="color:var(--gold)">' + getCredits() + ' credits</strong></div>' +
-    '<div style="margin-bottom:.5rem">◇ Watch an ad — <strong>+' + AD_CREDIT_REWARD + ' credits</strong> (' + remaining + ' views left today)</div>' +
-    '<div style="color:var(--ash);font-size:.85rem">Cash purchase coming soon (Stripe integration pending)</div>',
-    remaining > 0 ? 'Watch Ad Now' : 'OK',
-    remaining > 0 ? watchAd : null,
-    remaining > 0 ? 'Cancel' : null
+    '<div style="margin-bottom:1rem">Balance: <strong style="color:var(--gold)">' + getCredits() + ' credits</strong></div>' +
+    (canWatch
+      ? '<div style="margin-bottom:1.2rem">◇ <strong>Watch today\'s ad</strong> — +' + AD_CREDIT_REWARD + ' credits (1 per day)</div>'
+      : '<div style="margin-bottom:1.2rem;color:var(--ash)">◇ Ad credits claimed today — come back tomorrow</div>') +
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.75rem;color:var(--ash);margin-bottom:.6rem;letter-spacing:.05em">BUY CREDITS</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;margin-bottom:1rem">' +
+    CREDIT_TIERS.map(t =>
+      '<div style="font-size:.92rem"><strong style="color:var(--gold)">' + t.credits + '</strong> credits</div>' +
+      '<div style="font-size:.92rem;color:var(--ash)">' + t.price + '</div>'
+    ).join('') +
+    '</div>' +
+    '<div style="color:var(--ash);font-size:.78rem">In-app purchase via Google Play Billing (coming at launch)</div>',
+    canWatch ? 'Watch Ad (+' + AD_CREDIT_REWARD + ')' : 'OK',
+    canWatch ? watchAd : null,
+    canWatch ? 'Cancel' : null
   );
 }
 
@@ -164,6 +188,163 @@ function renderReading(reading, mode) {
     ${reading.synthesis  ? `<div class="reading-block reading-synthesis"><p>${reading.synthesis}</p></div>` : ''}
     ${reading.footerHint ? `<div class="reading-hint">${reading.footerHint}</div>` : ''}
   `;
+}
+
+// ── Now Reading (scoped predictive, next ~24h) ────────────────────────────────
+const SCOPE_META = {
+  love:       { label: 'Love & Romance',      planets: ['Venus','Moon','Mars'],            houses: [5,7,8,4] },
+  work:       { label: 'Career & Work',        planets: ['Sun','Saturn','Mercury','Mars'],  houses: [6,10,2,3] },
+  health:     { label: 'Health & Vitality',    planets: ['Moon','Mars','Sun'],              houses: [1,6,12] },
+  finances:   { label: 'Finances',             planets: ['Venus','Jupiter','Saturn'],       houses: [2,8,11] },
+  creativity: { label: 'Creativity & Spirit',  planets: ['Venus','Sun','Moon','Jupiter'],  houses: [5,3,9,12] },
+  general:    { label: 'All Areas',            planets: null,                               houses: null },
+};
+
+const NOW_SCOPE_INTERP = {
+  love:       {
+    conjunction:'draws two forces into direct contact — expect intensity and closeness',
+    sextile:    'opens a smooth channel — small social moments carry unexpected warmth',
+    square:     'creates productive friction — tension that clarifies what you actually want',
+    trine:      'flows easily — natural magnetism is heightened without effort',
+    quincunx:   'asks for adjustment — something in the dynamic needs a small recalibration',
+    opposition: 'puts two desires in direct view of each other — negotiation, not avoidance',
+  },
+  work:       {
+    conjunction:'focuses energy sharply — decisions made now carry real weight',
+    sextile:    'opens a practical door — outreach, communication, or initiative pays off',
+    square:     'introduces a test — pressure that sharpens your actual capability',
+    trine:      'eases the path — effort lands well and authority is on your side',
+    quincunx:   'flags a mismatch — recalibrate expectations before proceeding',
+    opposition: 'surfaces a competing priority — clarity comes from facing it directly',
+  },
+  health:     {
+    conjunction:'amplifies the body\'s signal — rest or move, but do not ignore what you feel',
+    sextile:    'supports recovery and regulation — a good moment to establish a small habit',
+    square:     'introduces strain — mind and body are asking for different things',
+    trine:      'supports the system — energy flows and the body responds well',
+    quincunx:   'suggests a subtle imbalance — something small has compounded',
+    opposition: 'creates an axis of tension — emotional and physical states are in dialogue',
+  },
+  finances:   {
+    conjunction:'concentrates financial energy — a decision point is forming',
+    sextile:    'opens a small but real opportunity — pursue it with modest action',
+    square:     'introduces a constraint — pressure that clarifies genuine priorities',
+    trine:      'supports flow — resources move and the timing is favorable',
+    quincunx:   'flags a leak or mismatch — audit before committing',
+    opposition: 'surfaces a competing demand — choose rather than delay',
+  },
+  creativity: {
+    conjunction:'sparks direct contact with an idea or impulse — act on it immediately',
+    sextile:    'offers a light on — inspiration is available if you reach for it',
+    square:     'creates productive resistance — the friction is generative, not blocking',
+    trine:      'opens the channel fully — create now, edit later',
+    quincunx:   'asks for a form shift — the idea is right, the container may not be',
+    opposition: 'puts vision and execution in tension — useful for refining, not launching',
+  },
+  general:    {
+    conjunction:'brings two forces into direct alignment — a significant moment',
+    sextile:    'opens a practical channel — small initiative yields results',
+    square:     'applies pressure that produces growth — do not avoid it',
+    trine:      'eases flow across this area of life — work with it',
+    quincunx:   'flags a need for adjustment — something small is misaligned',
+    opposition: 'creates visible tension between two priorities — engage, do not defer',
+  },
+};
+
+const HOUSE_CONTEXT = [
+  'self and body','resources and values','communication','home and family',
+  'creativity and pleasure','health and service','relationships','shared resources',
+  'expansion and belief','career and legacy','community and goals','inner life and endings',
+  'liminal space and integration',
+];
+
+function buildNowReading(transitAspects, scope, mode) {
+  const meta = SCOPE_META[scope] || SCOPE_META.general;
+  const interp = NOW_SCOPE_INTERP[scope] || NOW_SCOPE_INTERP.general;
+
+  // Score each transit for relevance to the chosen scope
+  function scoreTransit(t) {
+    let s = 0;
+    if (meta.planets && meta.planets.includes(t.bodyA)) s += 3;
+    if (meta.houses  && meta.houses.includes(t.natalHouse)) s += 3;
+    if (t.applying)   s += 4;
+    if (t.orb < 0.5)  s += 3;
+    else if (t.orb < 1.5) s += 2;
+    else if (t.orb < 3)   s += 1;
+    // Moon is always time-sensitive (moves ~13°/day)
+    if (t.bodyA === 'Moon') s += 2;
+    return s;
+  }
+
+  const scored = transitAspects
+    .map(t => ({ ...t, _score: scoreTransit(t) }))
+    .sort((a, b) => b._score - a._score);
+
+  const top = scored.slice(0, 3);
+
+  if (!top.length) {
+    return `<div class="now-reading-block"><p>The sky is in a quiet phase relative to your chart right now — no major transits are closing within orb for ${meta.label.toLowerCase()}. This is a window for consolidation rather than action.</p></div>`;
+  }
+
+  const moon = top.find(t => t.bodyA === 'Moon');
+  const primary = top[0];
+  const secondary = top[1];
+
+  const houseOf = (t) => t.natalHouse ? `your house of ${HOUSE_CONTEXT[(t.natalHouse - 1) % 13]}` : 'your chart';
+  const timing  = (t) => {
+    if (!t.daysToExact) return 'over the coming hours';
+    if (t.daysToExact < 0.25) return 'within the next few hours';
+    if (t.daysToExact < 0.5)  return 'by tonight';
+    if (t.daysToExact < 1)    return 'sometime today';
+    return 'within the next day';
+  };
+  const aspVerb = (t) => t.applying ? 'is forming' : 'is completing';
+  const aspDesc = (t) => interp[t.name?.toLowerCase()] || interp.conjunction;
+
+  const label    = mode === 'oracle' ? 'ORACLE' : meta.label.toUpperCase();
+  const oracleNote = mode === 'oracle' ? '<p class="now-reading-oracle-voice">The unvarnished read follows.</p>' : '';
+
+  let html = `<div class="now-reading-block">`;
+  html += `<div class="now-reading-scope-label">${label} · NEXT 24 HOURS</div>`;
+  html += oracleNote;
+
+  // Primary transit
+  html += `<p><strong>${primary.bodyA}</strong> ${aspVerb(primary)} a ${primary.name?.toLowerCase() || 'aspect'} with your natal ${primary.bodyB} in ${houseOf(primary)}, ${timing(primary)}. This ${aspDesc(primary)}.</p>`;
+
+  // Secondary transit (if present)
+  if (secondary) {
+    html += `<p>Simultaneously, <strong>${secondary.bodyA}</strong> is ${secondary.applying ? 'moving toward' : 'separating from'} your natal ${secondary.bodyB} — ${aspDesc(secondary)}.</p>`;
+  }
+
+  // Moon timing note
+  if (moon && moon !== primary) {
+    html += `<p class="now-reading-moon">The Moon is the fastest clock in this chart right now. Its passage through ${moon.bodyB === 'Ascendant' ? 'your Ascendant' : 'natal ' + moon.bodyB} completes ${timing(moon)} — watch for a shift in emotional tone at that moment.</p>`;
+  } else if (moon) {
+    html += `<p class="now-reading-moon">The Moon is the primary mover here. It completes this passage ${timing(moon)} — the shift will be felt, not just seen.</p>`;
+  }
+
+  // Synthesis
+  const synthScope = {
+    love:       'In matters of connection, the window open right now rewards',
+    work:       'For your work and output, the current alignment favors',
+    health:     'Your body is signaling',
+    finances:   'Financially, the next 24 hours call for',
+    creativity: 'Creatively, what is available to you right now is',
+    general:    'The most active thread in your chart right now points toward',
+  };
+  const synthAction = {
+    conjunction:'directness. Make the contact. Say the thing.',
+    sextile:    'a light touch. Small initiative, not grand gesture.',
+    square:     'engagement rather than avoidance. The resistance is productive.',
+    trine:      'trust. Let it move without forcing it.',
+    quincunx:   'adjustment. One thing is slightly off — find it.',
+    opposition: 'naming the tension. Clarity over comfort.',
+  };
+  const synthKey = primary.name?.toLowerCase() || 'conjunction';
+  html += `<p><em>${synthScope[scope] || synthScope.general} ${synthAction[synthKey] || synthAction.conjunction}</em></p>`;
+
+  html += '</div>';
+  return html;
 }
 
 // ── Ecliptic strip ────────────────────────────────────────────────────────────
@@ -980,4 +1161,39 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('quarterlyOutput').innerHTML = html;
     track('quarterly_run');
   });
+
+  // ── Now Reading (scoped predictive) ────────────────────────────────────────
+  // Cost: 3 credits. Uses already-computed transitAspects — no extra JPL call.
+  // Shortcut URL /?quick=1 opens app directly; once chart is submitted this button appears.
+  document.getElementById('suddenForecastBtn')?.addEventListener('click', function() {
+    if (!_natalChart) return;
+    if (getCredits() < CREDIT_COSTS.suddenForecast) { earnOrBuyModal(); return; }
+    const sec = document.getElementById('suddenForecastSection');
+    if (!sec) return;
+    sec.classList.remove('hidden');
+    document.getElementById('suddenForecastOutput').innerHTML = '';
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('scopeGrid')?.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-scope]');
+    if (!btn || !_natalChart) return;
+    if (!spendCredits(CREDIT_COSTS.suddenForecast)) { earnOrBuyModal(); return; }
+    const scope = btn.dataset.scope;
+    const mode  = document.body.dataset.mode === 'oracle' ? 'oracle' : 'standard';
+    const html  = buildNowReading(_transitAspects, scope, mode);
+    document.getElementById('suddenForecastOutput').innerHTML = html;
+    document.getElementById('suddenForecastOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    track('sudden_forecast_run', { scope });
+  });
+
+  // Handle /?quick=1 shortcut — scroll to premium section after chart load
+  if (new URLSearchParams(window.location.search).has('quick')) {
+    document.getElementById('birthForm')?.addEventListener('submit', function onQuickSubmit() {
+      setTimeout(() => {
+        document.getElementById('suddenForecastBtn')?.click();
+      }, 1800);
+      this.removeEventListener('submit', onQuickSubmit);
+    }, { once: true });
+  }
 });

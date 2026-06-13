@@ -187,8 +187,24 @@
            document.getElementById('premiumBtns')?.classList.remove('hidden')
            after chart render (see Edit 4 in app.js). -->
       <div class="premium-btns hidden" id="premiumBtns">
+        <button class="premium-btn premium-btn-now" id="suddenForecastBtn">◈ Sudden Forecast — 30 credits</button>
         <button class="premium-btn" id="synastryBtn">⟁ Love Compatibility — 10 credits</button>
         <button class="premium-btn" id="quarterlyBtn">◎ Quarterly Prediction — 20 credits</button>
+      </div>
+
+      <!-- Sudden Forecast: scope selection + output -->
+      <div id="suddenForecastSection" class="premium-section hidden">
+        <div class="section-label" style="margin-top:2rem;margin-bottom:1rem">Sudden Forecast — Next 24 Hours</div>
+        <p class="body-text" style="margin-bottom:1.5rem">What area of life does this reading focus on?</p>
+        <div class="scope-grid" id="scopeGrid">
+          <button class="scope-btn" data-scope="love">Love &amp; Romance</button>
+          <button class="scope-btn" data-scope="work">Career &amp; Work</button>
+          <button class="scope-btn" data-scope="health">Health &amp; Vitality</button>
+          <button class="scope-btn" data-scope="finances">Finances</button>
+          <button class="scope-btn" data-scope="creativity">Creativity &amp; Spirit</button>
+          <button class="scope-btn" data-scope="general">All Areas</button>
+        </div>
+        <div id="suddenForecastOutput"></div>
       </div>
 
       <!-- Synastry output section — shown by synastryBtn click handler in app.js -->

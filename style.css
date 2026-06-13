@@ -1501,3 +1501,51 @@ body[data-mode=oracle] .reading-output { border-top-color: rgba(200,153,42,0.3);
   .reading-block { padding: 1rem; font-size: 0.9rem; }
   .credits-bar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 }
+
+/* ── Now Reading — scope grid + output ──────────────────────────────────────── */
+.scope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.scope-btn {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text);
+  background: rgba(201,185,154,0.05);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.9rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.2s, border-color 0.2s;
+}
+.scope-btn:hover { background: rgba(201,185,154,0.12); border-color: var(--gold); color: var(--gold); }
+.now-reading-block { margin-top: 2rem; }
+.now-reading-scope-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ash);
+  letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+}
+.now-reading-block p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1.85;
+  margin-bottom: 1.1em;
+  color: var(--text);
+}
+.now-reading-moon { color: var(--ash) !important; font-style: italic; }
+.now-reading-oracle-voice { color: var(--gold); font-style: italic; font-size: 0.9rem !important; }
+.premium-btn-now { border-color: var(--gold); color: var(--gold); }
+@media (max-width: 480px) { .scope-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Light mode: full inversion ─────────────────────────────────────────────── */
+@media (prefers-color-scheme: light) {
+  html { filter: invert(1) hue-rotate(180deg); }
+  img, video, canvas, svg, .wheel-wrap { filter: invert(1) hue-rotate(180deg); }
+}
