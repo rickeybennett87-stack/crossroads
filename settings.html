@@ -68,6 +68,31 @@
     </div>
 
     <div class="settings-group">
+      <div class="settings-group-label">Personal info</div>
+
+      <div class="settings-row" style="cursor:default;">
+        <div>
+          <div class="settings-row-label">Name</div>
+          <div class="settings-row-sub" id="piName">—</div>
+        </div>
+      </div>
+
+      <div class="settings-row" style="cursor:default;">
+        <div>
+          <div class="settings-row-label">Email</div>
+          <div class="settings-row-sub" id="piEmail">—</div>
+        </div>
+      </div>
+
+      <div class="settings-row" style="cursor:default;">
+        <div>
+          <div class="settings-row-label">Sign-in method</div>
+          <div class="settings-row-sub" id="piProvider">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
       <div class="settings-group-label">Account</div>
 
       <button class="settings-row-btn" id="settingsSignOutBtn">
@@ -142,6 +167,12 @@
       if (user.photoURL) {
         document.getElementById('avatarWrap').innerHTML = `<img src="${user.photoURL}" alt="">`;
       }
+      document.getElementById('piName').textContent     = user.displayName || '—';
+      document.getElementById('piEmail').textContent    = user.email;
+      const providerIds = user.providerData.map(p => p.providerId);
+      document.getElementById('piProvider').textContent =
+        providerIds.includes('google.com') ? 'Google Sign-In' :
+        providerIds.includes('password')   ? 'Email and password' : providerIds.join(', ');
       try {
         const snap = await getDoc(doc(db, 'users', user.uid));
         const credits = snap.exists() ? (snap.data().credits || 0) : 0;
