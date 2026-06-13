@@ -17,6 +17,19 @@
   .back-link { display: inline-block; margin-bottom: 2rem; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; text-decoration: none; letter-spacing: 0.06em; }
   .back-link:hover { color: #c9b99a; }
 
+  /* Auth wall */
+  .auth-wall { text-align: center; padding: 3rem 1rem; }
+  .auth-wall p { color: #7a6a54; margin-bottom: 1.5rem; }
+  .auth-google-btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.06em;
+    background: transparent; border: 1px solid #3a2a1a; color: #c9b99a;
+    padding: 0.75rem 1.75rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .auth-google-btn:hover { border-color: #7a6a54; background: #1a0a0f44; }
+  .signed-in-as { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #5a4a34; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+  .signed-in-as span { color: #7a6a54; }
+
   /* Option cards */
   .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; }
   @media (max-width: 520px) { .option-grid { grid-template-columns: 1fr; } }
@@ -93,7 +106,20 @@
   <h1>Data &amp; Account Deletion</h1>
   <p class="meta">Crossroads True Sky Astrology &nbsp;·&nbsp; crossxroads.cc</p>
 
-  <p>Choose what you would like to remove. Data deletion removes your stored information while keeping your account active. Account deletion is permanent and removes everything.</p>
+  <!-- Auth wall — shown until signed in -->
+  <div id="authWallDel" class="auth-wall">
+    <p>You must be signed in to submit a deletion request.<br>This confirms the account belongs to you.</p>
+    <button class="auth-google-btn" id="delSignInBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
+      Sign in with Google
+    </button>
+    <div style="margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:#5a4a34;">or sign in with email at <a href="/" style="color:#7a6a54;">the main app</a> first</div>
+  </div>
+
+  <!-- Main content — hidden until signed in -->
+  <div id="delContent" class="hidden">
+    <div class="signed-in-as">Signed in as <span id="signedInEmail"></span></div>
+    <p>Choose what you would like to remove. Data deletion removes your stored information while keeping your account active. Account deletion is permanent and removes everything.</p>
 
   <div class="option-grid">
     <div class="option-card" id="cardData" onclick="selectOption('data')">
@@ -157,11 +183,13 @@
     </table>
     <p style="margin-top:1.5rem;font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:#5a4a34;">All requests are processed within 30 days. Questions: <a href="mailto:rickeybennett87@gmail.com" style="color:#7a6a54;">rickeybennett87@gmail.com</a></p>
   </div>
+  </div><!-- /delContent -->
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCy22hiDDVSLkiIXzZ2YAMfr6TCHSmMHg8",
@@ -172,8 +200,36 @@
     appId: "1:652043194486:web:63cc5e8d777a3ca2768f57"
   };
 
-  const app = initializeApp(firebaseConfig, 'delete-page');
-  const db  = getFirestore(app);
+  const app      = initializeApp(firebaseConfig, 'delete-page');
+  const db       = getFirestore(app);
+  const auth     = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  let currentUser = null;
+
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+    if (user) {
+      document.getElementById('authWallDel').classList.add('hidden');
+      document.getElementById('delContent').classList.remove('hidden');
+      document.getElementById('signedInEmail').textContent = user.email;
+      // Lock email fields to signed-in user
+      ['dataEmail','acctEmail'].forEach(id => {
+        const el = document.getElementById(id);
+        el.value = user.email;
+        el.readOnly = true;
+        el.style.opacity = '0.5';
+      });
+    } else {
+      document.getElementById('authWallDel').classList.remove('hidden');
+      document.getElementById('delContent').classList.add('hidden');
+    }
+  });
+
+  document.getElementById('delSignInBtn').addEventListener('click', async () => {
+    try { await signInWithPopup(auth, provider); }
+    catch(e) { console.error(e); }
+  });
 
   window.selectOption = function(type) {
     document.getElementById('cardData').classList.remove('selected', 'selected-danger');
