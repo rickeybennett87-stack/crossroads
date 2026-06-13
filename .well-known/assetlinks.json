@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "cc.crossxroads.app",
+    "package_name": "cc.crossxroads.twa",
     "sha256_cert_fingerprints": ["PLACEHOLDER_UPDATE_AFTER_PLAY_SIGNING"]
   }
 }]
