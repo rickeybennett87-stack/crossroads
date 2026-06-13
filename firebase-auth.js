@@ -96,7 +96,7 @@ document.getElementById('emailSignUpBtn')?.addEventListener('click', async () =>
   catch(e) { showAuthError(e.message); }
 });
 
-document.getElementById('signOutBtn')?.addEventListener('click', () => signOut(auth));
+// Sign out handled in settings.html
 
 function showAuthError(msg) {
   const el = document.getElementById('authError');

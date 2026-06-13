@@ -1,134 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WC611BCKGW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-WC611BCKGW');
-</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1a0a0f">
 <title>Settings — Crossroads</title>
+<link rel="canonical" href="https://crossxroads.cc/settings.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="settings.css">
+<style>
+  .settings-page { max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem; color: var(--text, #e8ddd0); }
+  .settings-page h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: #c9b99a; margin-bottom: 0.2em; }
+  .back-link { display: inline-block; margin-bottom: 2rem; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; text-decoration: none; letter-spacing: 0.06em; }
+  .back-link:hover { color: #c9b99a; }
+
+  .account-card { border: 1px solid #2a1a0a; border-radius: 10px; padding: 1.5rem; margin: 2rem 0 2.5rem; display: flex; align-items: center; gap: 1.25rem; }
+  .account-avatar { width: 48px; height: 48px; border-radius: 50%; background: #2a1a0a; border: 1px solid #3a2a1a; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: #c9b99a; flex-shrink: 0; overflow: hidden; }
+  .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .account-info { flex: 1; min-width: 0; }
+  .account-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; color: #c9b99a; margin-bottom: 0.2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .account-email { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #5a4a34; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .account-credits { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #7a6a54; margin-top: 0.4em; }
+
+  .settings-group { margin-bottom: 2.5rem; }
+  .settings-group-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: #5a4a34; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; border-bottom: 1px solid #1a0a0a; text-decoration: none; cursor: pointer; }
+  .settings-row:first-of-type { border-top: 1px solid #1a0a0a; }
+  .settings-row-label { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 300; color: #c9b99a; }
+  .settings-row-label.danger { color: #c07060; }
+  .settings-row-sub { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #5a4a34; margin-top: 0.2em; }
+  .settings-row-arrow { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #3a2a1a; }
+  .settings-row:hover .settings-row-label { color: #e8ddd0; }
+  .settings-row:hover .settings-row-label.danger { color: #e05040; }
+  .settings-row:hover .settings-row-arrow { color: #7a6a54; }
+  a.settings-row { color: inherit; }
+  button.settings-row-btn { width: 100%; text-align: left; background: transparent; border: none; padding: 0; cursor: pointer; }
+
+  .settings-footer { margin-top: 3rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #3a2a1a; letter-spacing: 0.05em; line-height: 1.8; }
+
+  .auth-wall-s { text-align: center; padding: 3rem 1rem; }
+  .auth-wall-s p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #7a6a54; margin-bottom: 1.5rem; }
+  .auth-btn-s { font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.06em; background: transparent; border: 1px solid #3a2a1a; color: #c9b99a; padding: 0.75rem 2rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .auth-btn-s:hover { border-color: #7a6a54; }
+</style>
 </head>
-<body class="settings-body">
+<body>
+<div class="settings-page">
+  <a href="/" class="back-link">← back to crossroads</a>
+  <h1>Settings</h1>
 
-<nav class="s-nav">
-  <a href="index.html" class="s-nav-back">‹ Crossroads</a>
-  <span class="s-nav-title">Settings</span>
-  <span class="s-nav-spacer"></span>
-</nav>
-
-<main class="s-main">
-
-  <div class="s-group">
-    <div class="s-group-label">Your Profile</div>
-    <div class="s-list">
-      <a href="settings-birth-data.html" class="s-row">
-        <span class="s-row-icon">☽</span>
-        <span class="s-row-body">
-          <span class="s-row-label">Birth Data</span>
-          <span class="s-row-desc">Date, time, and place of birth</span>
-        </span>
-        <span class="s-row-value" id="val-birth"></span>
-        <span class="s-chevron">›</span>
-      </a>
-    </div>
+  <div id="settingsAuthWall" class="auth-wall-s">
+    <p>Sign in to view your account settings.</p>
+    <button class="auth-btn-s" id="settingsSignInBtn">Sign in with Google</button>
+    <div style="margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:0.9rem;color:#5a4a34;">or <a href="/" style="color:#7a6a54;">sign in at the main app</a></div>
   </div>
 
-  <div class="s-group">
-    <div class="s-group-label">Calculation</div>
-    <div class="s-list">
-      <a href="settings-calc-method.html" class="s-row">
-        <span class="s-row-icon">⛎</span>
-        <span class="s-row-body">
-          <span class="s-row-label">Calculation Method</span>
-          <span class="s-row-desc">Ayanamsa, house system, coordinate basis</span>
-        </span>
-        <span class="s-row-value" id="val-calc"></span>
-        <span class="s-chevron">›</span>
-      </a>
-      <a href="settings-chart-display.html" class="s-row">
-        <span class="s-row-icon">✦</span>
-        <span class="s-row-body">
-          <span class="s-row-label">Chart Display</span>
-          <span class="s-row-desc">Planets shown, aspects, degree format</span>
-        </span>
-        <span class="s-chevron">›</span>
-      </a>
-    </div>
-  </div>
+  <div id="settingsContent" class="hidden">
 
-  <div class="s-group">
-    <div class="s-group-label">Alerts</div>
-    <div class="s-list">
-      <a href="settings-notifications.html" class="s-row">
-        <span class="s-row-icon">◈</span>
-        <span class="s-row-body">
-          <span class="s-row-label">Notifications</span>
-          <span class="s-row-desc">Transits, lunations, ingresses</span>
-        </span>
-        <span class="s-chevron">›</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="s-group">
-    <div class="s-group-label">Display</div>
-    <div class="s-list">
-      <div class="s-row s-row-toggle">
-        <span class="s-row-icon">◷</span>
-        <span class="s-row-body">
-          <span class="s-row-label">24-Hour Time</span>
-        </span>
-        <label class="s-toggle">
-          <input type="checkbox" id="toggle-24hr">
-          <span class="s-toggle-track"></span>
-          <span class="s-toggle-thumb"></span>
-        </label>
-      </div>
-      <div class="s-row s-row-toggle">
-        <span class="s-row-icon">°</span>
-        <span class="s-row-body">
-          <span class="s-row-label">Decimal Degrees</span>
-          <span class="s-row-desc">Off shows 14° 32' format</span>
-        </span>
-        <label class="s-toggle">
-          <input type="checkbox" id="toggle-decimal">
-          <span class="s-toggle-track"></span>
-          <span class="s-toggle-thumb"></span>
-        </label>
+    <div class="account-card">
+      <div class="account-avatar" id="avatarWrap">⛎</div>
+      <div class="account-info">
+        <div class="account-name" id="settingsName">—</div>
+        <div class="account-email" id="settingsEmail">—</div>
+        <div class="account-credits" id="settingsCredits"></div>
       </div>
     </div>
+
+    <div class="settings-group">
+      <div class="settings-group-label">Account</div>
+
+      <button class="settings-row-btn" id="settingsSignOutBtn">
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Sign out</div>
+            <div class="settings-row-sub">You will need to sign in again to access your chart</div>
+          </div>
+          <div class="settings-row-arrow">→</div>
+        </div>
+      </button>
+
+      <a href="/delete.html" class="settings-row">
+        <div>
+          <div class="settings-row-label danger">Delete data or account</div>
+          <div class="settings-row-sub">Remove saved charts and data, or close your account permanently</div>
+        </div>
+        <div class="settings-row-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-label">About</div>
+
+      <a href="/privacy.html" class="settings-row">
+        <div><div class="settings-row-label">Privacy policy</div></div>
+        <div class="settings-row-arrow">→</div>
+      </a>
+
+      <a href="/staff.html" class="settings-row">
+        <div>
+          <div class="settings-row-label">Two Staffs</div>
+          <div class="settings-row-sub">On Asclepius, Ophiuchus, and a century of mistaken iconography</div>
+        </div>
+        <div class="settings-row-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="settings-footer">
+      Crossroads True Sky Astrology &nbsp;·&nbsp; v1.0.0 &nbsp;·&nbsp; crossxroads.cc<br>
+      For entertainment purposes only.
+    </div>
+
   </div>
+</div>
 
-</main>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-<script>
-(function() {
-  const birth = JSON.parse(localStorage.getItem('crossroads_birth') || 'null');
-  if (birth?.date) {
-    const d = new Date(birth.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-    document.getElementById('val-birth').textContent = d;
-  }
-  const calc = JSON.parse(localStorage.getItem('crossroads_calc') || 'null');
-  const labels = { lahiri:'Lahiri', fagan:'Fagan-Bradley', raman:'Raman', 'true-chitrapaksha':'True Chitra' };
-  document.getElementById('val-calc').textContent = calc?.ayanamsa ? (labels[calc.ayanamsa] || calc.ayanamsa) : 'Lahiri';
+  const firebaseConfig = {
+    apiKey: "AIzaSyCy22hiDDVSLkiIXzZ2YAMfr6TCHSmMHg8",
+    authDomain: "cross-x-roads.firebaseapp.com",
+    projectId: "cross-x-roads",
+    storageBucket: "cross-x-roads.firebasestorage.app",
+    messagingSenderId: "652043194486",
+    appId: "1:652043194486:web:63cc5e8d777a3ca2768f57"
+  };
 
-  const t24 = document.getElementById('toggle-24hr');
-  const tDec = document.getElementById('toggle-decimal');
-  t24.checked = JSON.parse(localStorage.getItem('crossroads_24hr') || 'false');
-  tDec.checked = JSON.parse(localStorage.getItem('crossroads_decimal') || 'false');
-  t24.addEventListener('change', () => localStorage.setItem('crossroads_24hr', t24.checked));
-  tDec.addEventListener('change', () => localStorage.setItem('crossroads_decimal', tDec.checked));
-})();
+  const app      = initializeApp(firebaseConfig, 'settings-page');
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      document.getElementById('settingsAuthWall').classList.add('hidden');
+      document.getElementById('settingsContent').classList.remove('hidden');
+      document.getElementById('settingsName').textContent  = user.displayName || 'Crossroads User';
+      document.getElementById('settingsEmail').textContent = user.email;
+      if (user.photoURL) {
+        document.getElementById('avatarWrap').innerHTML = `<img src="${user.photoURL}" alt="">`;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        const credits = snap.exists() ? (snap.data().credits || 0) : 0;
+        document.getElementById('settingsCredits').textContent = credits + ' credits';
+      } catch(e) {}
+    } else {
+      document.getElementById('settingsAuthWall').classList.remove('hidden');
+      document.getElementById('settingsContent').classList.add('hidden');
+    }
+  });
+
+  document.getElementById('settingsSignInBtn').addEventListener('click', async () => {
+    try { await signInWithPopup(auth, provider); } catch(e) {}
+  });
+
+  document.getElementById('settingsSignOutBtn').addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = '/';
+  });
 </script>
 </body>
 </html>
