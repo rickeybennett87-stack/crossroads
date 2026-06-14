@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a0a0f">
+<title>Contact — Crossroads</title>
+<link rel="canonical" href="https://crossxroads.cc/contact.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .contact-page { max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem; color: var(--text, #e8ddd0); }
+  .contact-page h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: #c9b99a; margin-bottom: 0.3em; }
+  .contact-page p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.8; font-weight: 300; margin-bottom: 1.2em; }
+  .meta { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #5a4a34; letter-spacing: 0.05em; margin-bottom: 2.5rem; }
+  .back-link { display: inline-block; margin-bottom: 2rem; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #7a6a54; text-decoration: none; letter-spacing: 0.06em; }
+  .back-link:hover { color: #c9b99a; }
+  .contact-form label { display: block; font-family: 'DM Mono', monospace; font-size: 0.76rem; color: #7a6a54; letter-spacing: 0.06em; margin-bottom: 0.5rem; margin-top: 1.25rem; }
+  .contact-form input[type="text"],
+  .contact-form input[type="email"],
+  .contact-form textarea {
+    width: 100%; box-sizing: border-box;
+    background: #1a0a0f; border: 1px solid #3a2a1a;
+    color: #e8ddd0; font-family: 'DM Mono', monospace; font-size: 0.88rem;
+    padding: 0.75rem 1rem; border-radius: 6px; outline: none;
+  }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: #7a6a54; }
+  .contact-form textarea { resize: vertical; min-height: 140px; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+  .contact-btn {
+    margin-top: 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.08em;
+    background: transparent; border: 1px solid #5a4a34; color: #c9b99a;
+    padding: 0.75rem 2rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .contact-btn:hover { border-color: #c9b99a; background: #2a1a0a44; }
+  .contact-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #contactStatus { margin-top: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.7; }
+  .status-ok  { color: #80c090; }
+  .status-err { color: #c07060; }
+  .direct-contact { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #2a1a0a; font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #5a4a34; line-height: 1.9; }
+  .direct-contact a { color: #7a6a54; text-decoration: none; }
+  .direct-contact a:hover { color: #c9b99a; }
+</style>
+</head>
+<body>
+<div class="contact-page">
+  <a href="/" class="back-link">← back to crossroads</a>
+  <h1>Contact</h1>
+  <p class="meta">Crossroads True Sky Astrology &nbsp;·&nbsp; crossxroads.cc</p>
+
+  <p>Questions, feedback, or issues with the app. We read everything.</p>
+
+  <div class="contact-form">
+    <label for="contactName">Name</label>
+    <input type="text" id="contactName" placeholder="Your name" autocomplete="name">
+
+    <label for="contactEmail">Email</label>
+    <input type="email" id="contactEmail" placeholder="you@example.com" autocomplete="email">
+
+    <label for="contactSubject">Subject</label>
+    <input type="text" id="contactSubject" placeholder="e.g. Bug report, billing question, general feedback">
+
+    <label for="contactMessage">Message</label>
+    <textarea id="contactMessage" placeholder="Tell us what's on your mind."></textarea>
+
+    <button class="contact-btn" id="contactBtn">Send message</button>
+    <div id="contactStatus"></div>
+  </div>
+
+  <div class="direct-contact">
+    Prefer email directly?<br>
+    <a href="mailto:rickeybennett87@gmail.com">rickeybennett87@gmail.com</a>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCy22hiDDVSLkiIXzZ2YAMfr6TCHSmMHg8",
+    authDomain: "cross-x-roads.firebaseapp.com",
+    projectId: "cross-x-roads",
+    storageBucket: "cross-x-roads.firebasestorage.app",
+    messagingSenderId: "652043194486",
+    appId: "1:652043194486:web:63cc5e8d777a3ca2768f57"
+  };
+
+  const app = initializeApp(firebaseConfig, 'contact-page');
+  const db  = getFirestore(app);
+
+  document.getElementById('contactBtn').addEventListener('click', async () => {
+    const name    = document.getElementById('contactName').value.trim();
+    const email   = document.getElementById('contactEmail').value.trim();
+    const subject = document.getElementById('contactSubject').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    const status  = document.getElementById('contactStatus');
+    const btn     = document.getElementById('contactBtn');
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.className = 'status-err';
+      status.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    if (!message) {
+      status.className = 'status-err';
+      status.textContent = 'Please enter a message.';
+      return;
+    }
+
+    btn.disabled = true;
+    status.className = '';
+    status.textContent = 'Sending…';
+
+    try {
+      await addDoc(collection(db, 'contactMessages'), {
+        name: name || '',
+        email,
+        subject: subject || '',
+        message,
+        sentAt: new Date().toISOString(),
+        status: 'unread'
+      });
+      status.className = 'status-ok';
+      status.textContent = 'Message sent. We\'ll get back to you at ' + email + '.';
+      btn.textContent = 'Sent';
+      ['contactName','contactEmail','contactSubject','contactMessage'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    } catch(e) {
+      status.className = 'status-err';
+      status.textContent = 'Something went wrong. Email rickeybennett87@gmail.com directly.';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
